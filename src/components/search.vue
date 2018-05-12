@@ -23,7 +23,7 @@
     data(){
       return{
        searchVal:'',
-       searchAjaxUrl:'http://localhost/biye/BodyPratice/php/search.php',
+       searchAjaxUrl:'http://112.74.63.14/BodyPratice/bodybuilding_php/search.php',
        listData:[],
        showResult:'display:block'
       }
@@ -98,7 +98,7 @@
    
   }
   #title{
-      background: #a76cf5;
+      background: #eeb172;
       padding:1rem 0;
       font-size:1rem;
       font-weight:bold;

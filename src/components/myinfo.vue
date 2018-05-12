@@ -44,8 +44,8 @@ export default {
       weight:'',
       age:'',
       sex: '男',
-      urlModify:'http://localhost/biye/BodyPratice/php/modifyInfomation.php',
-      urlQuery:'http://localhost/biye/BodyPratice/php/queryMyInfomation.php',
+      urlModify:'http://112.74.63.14/BodyPratice/bodybuilding_php/modifyInfomation.php',
+      urlQuery:'http://112.74.63.14/BodyPratice/bodybuilding_php/queryMyInfomation.php',
 
     }
   },

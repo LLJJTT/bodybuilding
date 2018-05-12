@@ -37,7 +37,7 @@ export default {
     return {
       username:'',
       pwd:'',
-      url:'http://localhost/biye/BodyPratice/php/login.php'//登录接口
+      url:'http://112.74.63.14/BodyPratice/bodybuilding_php/login.php'//登录接口
     }
   },
   methods:{

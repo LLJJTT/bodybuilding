@@ -77,7 +77,7 @@ export default {
         },{
           src:'static/img/4.jpg',
       }],
-      urlRankList:'http://localhost/biye/BodyPratice/php/rankingList.php'
+      urlRankList:'http://112.74.63.14/BodyPratice/bodybuilding_php/rankingList.php'
     }
   },
   methods:{
@@ -121,7 +121,7 @@ export default {
 
 <style scoped>
   #home{
-    height: 38rem;
+    max-height: 38rem;
     overflow: auto;
   }
   .block img{

@@ -40,7 +40,8 @@ export default {
 
 <style scoped>
   #zhishi_details{
-
+max-height: 38rem;
+    overflow: auto;
   }
   #title{
     background: #eeb172;

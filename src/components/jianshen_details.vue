@@ -85,9 +85,9 @@ export default {
       showP:true,
       jianshen_id:'',
       ls:'0',
-      urlLingPoints:'http://localhost/biye/BodyPratice/php/successLingPoints.php',
-      urlLingInsert:'http://localhost/biye/BodyPratice/php/successLingInserLock.php',
-      urlQueryLingStatus:'http://localhost/biye/BodyPratice/php/queryLingStatus.php',
+      urlLingPoints:'http://112.74.63.14/BodyPratice/bodybuilding_php/successLingPoints.php',
+      urlLingInsert:'http://112.74.63.14/BodyPratice/bodybuilding_php/successLingInserLock.php',
+      urlQueryLingStatus:'http://112.74.63.14/BodyPratice/bodybuilding_php/queryLingStatus.php',
 
     }
   },
@@ -208,7 +208,8 @@ export default {
 
 <style scoped>
   #jianshen_details{
-    
+    max-height: 38rem;
+    overflow: auto;
   }
   .title{
     position: absolute;

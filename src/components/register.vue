@@ -40,7 +40,7 @@ export default {
       phonenumber:'',
       pwd1:'',
       pwd2:'',
-      url:'http://localhost/biye/BodyPratice/php/register.php'//注册接口
+      url:'http://112.74.63.14/BodyPratice/bodybuilding_php/register.php'//注册接口
     }
   },
   methods:{

@@ -5,7 +5,7 @@
     </div>
     <div id="listDiv">
       <div @click="goZhishiDetails(item)" v-for="item in listData" class="wrapper">
-        <span class="biaoti">{{item.obj_name}}</span><span class="tupian"><img :src="item.imgurl" alt=""><div style="clear:both;"></div></span>
+        <span class="biaoti">{{item.obj_name}}</span><span class="tupian"><img :src="item.img" alt=""><div style="clear:both;"></div></span>
       </div>
     </div>
     <div style="margin-top:100px;font-size:1rem;" v-if="showStatus">无数据</div>
@@ -19,7 +19,7 @@ export default {
     return {
       listData:[],
       showStatus:false,
-      urlZhishi:'http://localhost/biye/BodyPratice/php/zhishiList.php'
+      urlZhishi:'http://112.74.63.14/BodyPratice/bodybuilding_php/zhishiList.php'
     }
   },
   methods:{
@@ -59,7 +59,7 @@ export default {
 
 <style scoped>
 #zhishi{
-  height: 36rem;
+  max-height: 38rem;
     overflow: auto;
 }
   #title{

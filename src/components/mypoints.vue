@@ -30,7 +30,7 @@ export default {
   data () {
     return {
       left_points:'100',
-      urlQuery:'http://localhost/biye/BodyPratice/php/queryMyInfomation.php'
+      urlQuery:'http://112.74.63.14/BodyPratice/bodybuilding_php/queryMyInfomation.php'
     }
   },
   methods:{

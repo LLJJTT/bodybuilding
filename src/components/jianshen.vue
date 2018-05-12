@@ -23,8 +23,8 @@ export default {
       points:'',
       account:'',
       locked_number:'0',
-      urlJian:'http://localhost/biye/BodyPratice/php/queryJianshenList.php',
-      urlQuery:'http://localhost/biye/BodyPratice/php/queryMyInfomation.php',
+      urlJian:'http://112.74.63.14/BodyPratice/bodybuilding_php/queryJianshenList.php',
+      urlQuery:'http://112.74.63.14/BodyPratice/bodybuilding_php/queryMyInfomation.php',
     }
   },
   methods:{
@@ -100,10 +100,9 @@ export default {
 </script>
 
 <style scoped>
-  #bodylist{
-    height: 30rem;
+  #jianshen{
+    max-height: 38rem;
     overflow: auto;
-
   }
   #title{
     background: #eeb172;
@@ -124,7 +123,7 @@ export default {
   }
   .wrapper h1{
     position: absolute;
-    color: #fff;
+    color: #ff1500;
     font-size: 1rem;
     top:2rem;
     left: 3rem;

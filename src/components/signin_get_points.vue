@@ -109,8 +109,8 @@ export default {
       all_points:'0.00',
       sign_in_today:'',
       sign_in_number:'',
-      urlQuery:'http://localhost/biye/BodyPratice/php/queryMyInfomation.php',
-      urlSignPoints:'http://localhost/biye/BodyPratice/php/signInPoints.php',
+      urlQuery:'http://112.74.63.14/BodyPratice/bodybuilding_php/queryMyInfomation.php',
+      urlSignPoints:'http://112.74.63.14/BodyPratice/bodybuilding_php/signInPoints.php',
 
     }
   },
