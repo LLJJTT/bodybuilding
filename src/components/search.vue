@@ -11,7 +11,7 @@
     <!-- 搜索列表 -->
     <div :style="showResult" id="search_result">
       <ul>
-        <li @click="goDetails(item)" class="scenery_name" v-for="item in listData">{{item.name}}</li>
+        <li @click="goDetails(item)" class="scenery_name" v-for="item in listData">{{item.obj_name}}</li>
       </ul>
     </div>
   </div>
@@ -23,7 +23,7 @@
     data(){
       return{
        searchVal:'',
-       searchAjaxUrl:'http://112.74.63.14/interface/search.php',
+       searchAjaxUrl:'http://localhost/biye/BodyPratice/php/search.php',
        listData:[],
        showResult:'display:block'
       }
@@ -62,7 +62,8 @@
             if (res.status==200) {
               this.listData = res.data
               this.showResultList()
-              if (res.data.status==0) {
+              console.log(res.data)
+              if (res.data.length==0) {
                 Toast({
                   message:'无搜索结果',
                   duration:3000,
@@ -74,11 +75,10 @@
       },
       goDetails(item){
         this.$router.push({
-          name:'details',
+          name:'zhishi_details',
           params:{
             detailData:item,
-            collectionType:'des'
-          }
+          },
         })
       }
     },

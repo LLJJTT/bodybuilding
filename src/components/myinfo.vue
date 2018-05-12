@@ -7,6 +7,10 @@
     <div id="modify">
       <ul>
         <li class="wrapper">
+          <span>昵称</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <el-input type="text" v-model="nick_name" placeholder="请输入昵称"></el-input>
+        </li>
+        <li class="wrapper">
           <span>身高</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><i>单位 cm</i>
           <el-input type="number" v-model="height" placeholder="请输入身高"></el-input>
         </li>
@@ -35,15 +39,26 @@ import { Toast } from 'mint-ui';
 export default {
   data () {
     return {
+      nick_name:'',
       height:'',
       weight:'',
       age:'',
-      sex: '男'
+      sex: '男',
+      urlModify:'http://localhost/biye/BodyPratice/php/modifyInfomation.php',
+      urlQuery:'http://localhost/biye/BodyPratice/php/queryMyInfomation.php',
+
     }
   },
   methods:{
     modifyMyInfo(){
-      if (this.height=='') {
+      if (this.nick_name=='') {
+        Toast({
+          message: '请输入昵称',
+          position: 'middle',
+          duration:1000
+        });
+      }
+      else if (this.height=='') {
         Toast({
           message: '请输入身高',
           position: 'middle',
@@ -86,13 +101,69 @@ export default {
         });
       }
       else{
-        // ajax
-        alert(1)
+        this.modifyMes()
       }
+    },
+    // 修改我得信息
+    modifyMes(){
+      var formdata = new FormData()
+      const user_id = JSON.parse(sessionStorage.loginUser).data.user_id
+      formdata.append('user_id',user_id)
+      formdata.append('nick_name',this.nick_name)
+      formdata.append('height',this.height)
+      formdata.append('weight',this.weight)
+      formdata.append('age',this.age)
+      formdata.append('sex',this.sex)
+      axios({
+        method:"POST",
+        url:this.urlModify,
+        data:formdata,
+        config: { headers: {'Content-Type': 'application/x-www-form-urlencoded' }}
+      })
+      .then((res) =>{ 
+        if (res.data.status==1) {
+          Toast({
+            message: '修改成功',
+            position: 'middle',
+            duration:1000
+          });
+        }
+        else{
+          Toast({
+            message: '修改失败',
+            position: 'middle',
+            duration:1000
+          });
+        }
+      })
+      .catch(err =>{
+        console.log(err)
+      })
+    },// 查询我的信息
+    queryMyInfo(){
+      var formdata = new FormData()
+      const user_id = JSON.parse(sessionStorage.loginUser).data.user_id
+      formdata.append('user_id',user_id)
+      axios({
+        method:"POST",
+        url:this.urlQuery,
+        data:formdata,
+        config: { headers: {'Content-Type': 'application/x-www-form-urlencoded' }}
+      })
+      .then((res) =>{ 
+        this.nick_name = res.data[0].nick_name
+        this.height = res.data[0].height
+        this.weight = res.data[0].weight
+        this.age = res.data[0].age
+        this.sex = res.data[0].sex
+      })
+      .catch(err =>{
+        console.log(err)
+      })
     }
   },
   created(){
-    
+    this.queryMyInfo()
   }
 }
 </script>

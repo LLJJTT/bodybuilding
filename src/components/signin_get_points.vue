@@ -1,5 +1,9 @@
 <template>
-  <div id="signin_get_points">
+  <div id="signin_get_points"
+  v-loading="loading2"
+    element-loading-text="签到中,请稍后"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
     <div id="title">
       签到积分
     </div>
@@ -7,18 +11,21 @@
     <div id="all">总积分:&nbsp;&nbsp;&nbsp;<i>{{all_points}}</i></div>
     <div id="sign">
       <el-row  :gutter="1">
-        <el-col @click.native="getPoints(item)" v-for="item in colList" :key="item.id" :span="4.8">
+        <el-col @click.native="getPoints" v-for="item in colList" :key="item.id" :span="4.8">
           <el-card shadow="always">
             <img class="img_points" :src="item.imgUrl" alt="">
           </el-card>
         </el-col>
       </el-row>
     </div>
+    <div id="alll"><i>规则：</i>每日8:00-24:00签到;签到获得 20 积分;每日只可签到一次</i></div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { Toast } from 'mint-ui';
+
 export default {
   data () {
     return {
@@ -98,16 +105,103 @@ export default {
         id:25,
         imgUrl:'static/img/shixinnoc.png',
       }],
-      all_points:'234'
+      loading2: false,
+      all_points:'0.00',
+      sign_in_today:'',
+      sign_in_number:'',
+      urlQuery:'http://localhost/biye/BodyPratice/php/queryMyInfomation.php',
+      urlSignPoints:'http://localhost/biye/BodyPratice/php/signInPoints.php',
+
     }
   },
   methods:{
-    getPoints(item){
-      item.imgUrl = 'static/img/shixinyesc.png'
-    }
+    showSignMany(){
+      var a  = Number(this.sign_in_number)
+      for(var i=0;i<a;i++){
+        this.colList[i].imgUrl = 'static/img/shixinyesc.png'
+      }
+    },
+    // 点击按钮签到
+    getPoints(){
+      this.loading2 = true
+      if (this.sign_in_today==0) {
+        this.sign_in_today = '1'
+        this.signGetPoints()
+      }
+      else{
+        this.loading2 = false
+        Toast({
+          message: '今日已签到',
+          position: 'middle',
+          duration:1000
+        });
+      }
+    },
+    // 查询我的信息
+    queryMyInfo(){
+      var formdata = new FormData()
+      const user_id = JSON.parse(sessionStorage.loginUser).data.user_id
+      formdata.append('user_id',user_id)
+      axios({
+        method:"POST",
+        url:this.urlQuery,
+        data:formdata,
+        config: { headers: {'Content-Type': 'application/x-www-form-urlencoded' }}
+      })
+      .then((res) =>{ 
+        this.all_points = res.data[0].points
+        this.sign_in_today = res.data[0].sign_in_today
+        this.sign_in_number = res.data[0].sign_in_number
+        if (this.all_points==0) {
+          this.all_points ="0"
+        }
+        else{
+          this.all_points = res.data[0].points
+        }
+        // 查询签到数量
+        this.showSignMany()
+      })
+      .catch(err =>{
+        console.log(err)
+      })
+    },
+    // 签到领取积分
+    signGetPoints(){
+      var formdata = new FormData()
+      const user_id = JSON.parse(sessionStorage.loginUser).data.user_id
+      formdata.append('user_id',user_id)
+      formdata.append('sign_in_today',this.sign_in_today)
+      axios({
+        method:"POST",
+        url:this.urlSignPoints,
+        data:formdata,
+        config: { headers: {'Content-Type': 'application/x-www-form-urlencoded' }}
+      })
+      .then((res) =>{ 
+        if (res.data.status==1) {
+          Toast({
+            message: '签到成功',
+            position: 'middle',
+            duration:1000,
+          });
+          this.loading2 = false
+          this.queryMyInfo()
+        }
+        else{
+          Toast({
+            message: '签到失败',
+            position: 'middle',
+            duration:1000
+          });
+        }
+      })
+      .catch(err =>{
+        console.log(err)
+      })
+    },
   },
   created(){
-    
+    this.queryMyInfo()
   }
 }
 </script>
@@ -139,6 +233,18 @@ export default {
     font-size: 1rem;
     color: #000;
     font-weight: bolder;
+  }
+  #alll{
+    background: #fff;
+    padding: 2rem 0 1rem 0;
+    font-size: .8rem;
+    color: #000;
+    font-weight: bolder;
+  }
+  #alll i{
+    color: #333;
+    font-weight: 400;
+    letter-spacing:2px;
   }
   #all i{
     color: #333;

@@ -1,11 +1,16 @@
 <template>
-  <div id="my">
+  <div id="my" >
   	<div id="title">
       我的
     </div>
 
     <div>
       <el-row>
+        <el-col  class="wrapper" :span="24">
+          <el-card shadow="always">
+            <i>{{account}}</i>
+          </el-card>
+        </el-col>
         <el-col @click.native="goMyInfo" class="wrapper" :span="24">
           <el-card shadow="always">
             我的信息
@@ -24,7 +29,7 @@
       </el-row>
     </div>
 
-    <button id="logout" @click="goLogin">登录</button>
+    <button  id="logout" @click="goLogin">{{loginWord}}</button>
   </div>
 </template>
 <script>
@@ -33,23 +38,74 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      points:''
+      points:'',
+      account:'未登录',
+      loginWord:'登录',
     }
   },
   methods:{
   	goLogin(){
-      this.$router.push({path:'/login'})
+      if (this.loginWord=="登录") {
+        this.$router.push({path:'/login'})
+      }
+      else if (this.loginWord=="退出登录") {
+        this.loginWord = '登录'
+        sessionStorage.removeItem('account')
+        this.account = '未登录'
+        Toast({
+          message: '退出成功',
+          position: 'middle',
+          duration:3000,
+        });
+      }
     },
     goMyInfo(){
-      this.$router.push({path:'/index/myinfo'})
+      if (this.account==''||this.account==undefined||this.account==null||this.account=="未登录") {
+        Toast({
+          message: '请先登录',
+          position: 'middle',
+          duration:1000,
+        });
+      }
+      else{
+        this.$router.push({path:'/index/myinfo'})
+      }
     },
     goMyPoints(){
-      this.$router.push({path:'/index/mypoints'})
+      if (this.account==''||this.account==undefined||this.account==null||this.account=="未登录") {
+        Toast({
+          message: '请先登录',
+          position: 'middle',
+          duration:1000,
+        });
+      }
+      else{
+        this.$router.push({path:'/index/mypoints'})
+      }
     },
     goSignInPoints(){
+      if (this.account==''||this.account==undefined||this.account==null||this.account=="未登录") {
+        Toast({
+          message: '请先登录',
+          position: 'middle',
+          duration:1000,
+        });
+      }
+      else{
       this.$router.push({path:'/index/signin_get_points'})
+      }
     }
   },
+  created(){
+    this.account = sessionStorage.getItem('account')
+    if (this.account==''||this.account==undefined||this.account==null) {
+      this.loginWord = '登录'
+      this.account = '未登录'
+    }
+    else{
+      this.loginWord = '退出登录'
+    }
+  }
   
 }
 </script>

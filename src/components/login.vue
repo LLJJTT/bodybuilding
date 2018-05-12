@@ -37,7 +37,7 @@ export default {
     return {
       username:'',
       pwd:'',
-      url:''//登录接口
+      url:'http://localhost/biye/BodyPratice/php/login.php'//登录接口
     }
   },
   methods:{
@@ -78,7 +78,7 @@ export default {
       }
       else{
         var formdata = new FormData()
-        formdata.append('username',this.username)
+        formdata.append('account',this.username)
         formdata.append('pwd',this.pwd)
         axios({
           method:"POST",
@@ -97,7 +97,7 @@ export default {
           }
           else if(res.data.status==1){//登录成功
             // 登录之后存USER-infomation-session
-            sessionStorage.setItem('username',this.username);
+            sessionStorage.setItem('account',this.username);
             const loginUser = JSON.stringify(res)
             sessionStorage.loginUser = loginUser
             Toast({
@@ -105,9 +105,9 @@ export default {
               position: 'middle',
               duration:2000,
             });
-            // 跳转我的
+            // 跳转主页
             that.$router.push({
-              path:'/index/my'
+              path:'/index/home'
             })
           }
           else if (res.data.status==0){//用户还没注册

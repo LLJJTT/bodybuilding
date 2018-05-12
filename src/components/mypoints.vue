@@ -29,16 +29,38 @@ import { Swipe, SwipeItem } from 'mint-ui';
 export default {
   data () {
     return {
-      left_points:'100'
+      left_points:'100',
+      urlQuery:'http://localhost/biye/BodyPratice/php/queryMyInfomation.php'
     }
   },
   methods:{
     goGetPoints(){
-       this.$router.push({path:'/index/jianshen'})
+      this.$router.push({path:'/index/jianshen'})
+    },
+    // 查询我的信息
+    queryMyInfo(){
+      var formdata = new FormData()
+      const user_id = JSON.parse(sessionStorage.loginUser).data.user_id
+      formdata.append('user_id',user_id)
+      axios({
+        method:"POST",
+        url:this.urlQuery,
+        data:formdata,
+        config: { headers: {'Content-Type': 'application/x-www-form-urlencoded' }}
+      })
+      .then((res) =>{ 
+        this.left_points = res.data[0].points
+        if (this.left_points==null||this.left_points=='') {
+          this.left_points ="0"
+        }
+      })
+      .catch(err =>{
+        console.log(err)
+      })
     }
   },
   created(){
-    
+    this.queryMyInfo()
   }
 }
 </script>

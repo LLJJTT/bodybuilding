@@ -23,14 +23,13 @@
         max-height="260"
         >
         <el-table-column
-          prop="id"
+          type="index"
           label="排名"
         align="center"
-
           >
         </el-table-column>
         <el-table-column
-          prop="account"
+          prop="nick_name"
           label="账号"
         align="center"
 
@@ -62,27 +61,13 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { Swipe, SwipeItem } from 'mint-ui';
 export default {
   data () {
     return {
-      rankList:[{
-        id:'1',
-        account:'张三',
-        points:'87'
-      },{
-        id:'2',
-        account:'李四',
-        points:'60'
-      },{
-        id:'3',
-        account:'王五',
-        points:'45'
-      },{
-        id:'4',
-        account:'赵六',
-        points:'30'
-      }],
+      rankList:[],
+      arr:[],
       swiper:[{
           src:'static/img/1.jpg'
         },{
@@ -92,6 +77,7 @@ export default {
         },{
           src:'static/img/4.jpg',
       }],
+      urlRankList:'http://localhost/biye/BodyPratice/php/rankingList.php'
     }
   },
   methods:{
@@ -100,10 +86,35 @@ export default {
       this.$router.push({
         path:'/index/search'
       })
+    },
+    getRankList(){
+      axios({
+        method:'GET',
+        url:this.urlRankList,
+        config: { 
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded' 
+          }
+        }
+      })
+      .then((res)=>{
+
+        // 排行榜,按照降序排列
+        function compare(property){
+            return function(a,b){
+                var value1 = a[property];
+                var value2 = b[property];
+                return value2 - value1;
+            }
+        }
+        // 按照points积分大小排序 
+        this.rankList = res.data.sort(compare('points'))
+        console.log(this.rankList)
+      })
     }
   },
   created(){
-    
+    this.getRankList()
   }
 }
 </script>

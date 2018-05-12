@@ -5,9 +5,10 @@
     </div>
     <div id="listDiv">
       <div @click="goZhishiDetails(item)" v-for="item in listData" class="wrapper">
-        <span class="biaoti">{{item.title}}</span><span class="tupian"><img :src="item.imgurl" alt=""><div style="clear:both;"></div></span>
+        <span class="biaoti">{{item.obj_name}}</span><span class="tupian"><img :src="item.imgurl" alt=""><div style="clear:both;"></div></span>
       </div>
     </div>
+    <div style="margin-top:100px;font-size:1rem;" v-if="showStatus">无数据</div>
   </div>
 </template>
 <script>
@@ -16,41 +17,42 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      listData:[{
-        title:'为什么晚饭要吃的少？',
-        imgurl:'static/img/news1.jpg'
-      },{
-        title:'为什么晚饭要吃的少？',
-        imgurl:'static/img/news1.jpg'
-      },{
-        title:'为什么晚饭要吃的少？',
-        imgurl:'static/img/news1.jpg'
-      },{
-        title:'为什么晚饭要吃的少？',
-        imgurl:'static/img/news1.jpg'
-      },{
-        title:'为什么晚饭要吃的少？',
-        imgurl:'static/img/news1.jpg'
-      },{
-        title:'为什么晚饭要吃的少？',
-        imgurl:'static/img/news1.jpg'
-      },{
-        title:'为什么晚饭要吃的少？',
-        imgurl:'static/img/news1.jpg'
-      },{
-        title:'为什么晚饭要吃的少？',
-        imgurl:'static/img/news1.jpg'
-      }]
+      listData:[],
+      showStatus:false,
+      urlZhishi:'http://localhost/biye/BodyPratice/php/zhishiList.php'
     }
   },
   methods:{
   	goZhishiDetails(item){
       console.log(item)
       this.$router.push({
-        path:'/index/zhishi_details'
+        name:'zhishi_details',
+        params:{
+          detailData:item
+        }
+      })
+    },
+    getData(){
+      axios({
+        method:'GET',
+        url:this.urlZhishi,
+        config: { 
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded' 
+          }
+        }
+      })
+      .then((res)=>{
+          this.listData = res.data
+          if (this.listData.length==0) {
+            this.showStatus = true
+          }
       })
     }
   },
+  created(){
+    this.getData()
+  }
   
 }
 </script>

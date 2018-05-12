@@ -40,7 +40,7 @@ export default {
       phonenumber:'',
       pwd1:'',
       pwd2:'',
-      url:''//注册接口
+      url:'http://localhost/biye/BodyPratice/php/register.php'//注册接口
     }
   },
   methods:{
@@ -94,7 +94,7 @@ export default {
       else{
         var that  = this
         var formdata = new FormData()
-        formdata.append('username',this.phonenumber)
+        formdata.append('account',this.phonenumber)
         formdata.append('pwd',this.pwd2)
         axios({
           method:"POST",
@@ -103,7 +103,6 @@ export default {
           config: { headers: {'Content-Type': 'application/x-www-form-urlencoded' }}
         })
         .then(res => {
-          console.log(res.data)
           if (res.data.status==0) {
             Toast({
               message: '用户已经存在',
@@ -111,18 +110,14 @@ export default {
             });
           }
           else if (res.data.status==1){
-            // 注册成功之后存USER-infomation-session
-            sessionStorage.setItem('username',this.username);
-            const loginUser = JSON.stringify(res)
-            sessionStorage.loginUser = loginUser
             Toast({
               message: '注册成功',
               position: 'middle',
-              duration:2000,
+              duration:5000,
             });
             // 跳转主页 
             that.$router.push({
-              path:'/index/home'
+              path:'/login'
             })
           }
           else{

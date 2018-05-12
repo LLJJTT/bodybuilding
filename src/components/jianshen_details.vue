@@ -23,9 +23,13 @@
           </el-col>
           <el-col :span="8">
             <el-card shadow="always">
-             <div>
+             <div v-if="showP">
               <li class="word">{{points}}</li>
-              <li class="name">积分</li>
+              <li class="name">获得积分</li>
+             </div>
+             <div v-if="showGetP">
+               <li @click="receivePoints"  class="word btn">领取</li>
+               <li class="name">{{points}}&nbsp;积分</li>
              </div>
             </el-card>
           </el-col>
@@ -52,7 +56,7 @@
             </el-col>
             <el-col :span="8">
               <el-card shadow="never">
-                <button id="start" @click.native="goStart">开始</button>
+                <button :disabled="startStatus" id="start" @click="goStart">开始</button>
               </el-card>
             </el-col>
           </el-row>
@@ -64,6 +68,7 @@
 
 <script>
 import axios from 'axios'
+import { Toast } from 'mint-ui';
 export default {
   data () {
     return {
@@ -73,16 +78,130 @@ export default {
       points:'20',
       level:'L1',
       introduce:'健美操也属于有氧运动，运动强度和燃脂效果不亚于跑步，如果觉得跑步过于枯燥，那么可以用健美操来代替，健美操一般指搏击操、杠铃操、健身操等健身房的公共课目运动，适合各个年龄层练习',
-      active_time:'600  秒'
+      active_time:'6',
+      listData:{},
+      startStatus:false,
+      showGetP:false,
+      showP:true,
+      jianshen_id:'',
+      ls:'0',
+      urlLingPoints:'http://localhost/biye/BodyPratice/php/successLingPoints.php',
+      urlLingInsert:'http://localhost/biye/BodyPratice/php/successLingInserLock.php',
+      urlQueryLingStatus:'http://localhost/biye/BodyPratice/php/queryLingStatus.php',
+
     }
   },
   methods:{
-   goStart(){
+    receivePoints(){
+      // 根据领取状态，判断可否点击
+      if (this.ls==0) {
+        var formdata = new FormData()
+        const user_id = JSON.parse(sessionStorage.loginUser).data.user_id
+        formdata.append('user_id',user_id)
+        formdata.append('obj_points',this.points)
+        formdata.append('jianshen_id',this.listData.id)
+        formdata.append('yes_get_points','1')
+        axios({
+          method:"POST",
+          url:this.urlLingPoints,
+          data:formdata,
+          config: { headers: {'Content-Type': 'application/x-www-form-urlencoded' }}
+        })
+        .then((res) =>{ 
+          if (res.data.status==1) {
+            this.ls = 1
+            Toast({
+              message: '领取成功',
+              position: 'middle',
+              duration:1000
+            });
+          }
+        })
+        .then((res) =>{
+          axios({
+            method:"POST",
+            url:this.urlLingInsert,
+            data:formdata,
+            config: { headers: {'Content-Type': 'application/x-www-form-urlencoded' }}
+          })
+          .then((res) =>{ 
+            console.log(res.data)
+          })
+          .catch(err =>{
+            console.log(err)
+          })
+        })
+        .catch(err =>{
+          console.log(err)
+        })
+      }
+      else{
+        Toast({
+          message: '你已经领取过了',
+          position: 'middle',
+          duration:1000
+        });
+      }
+    },
 
-   }
+    // 点击开始
+   goStart(){
+      this.startStatus = true
+      var that = this
+      var timer = setInterval(function(){
+        that.active_time --
+        if (that.active_time==1) {
+          clearInterval(timer)
+          that.active_time = "已完成"
+          that.showGetP = true
+          that.showP = false
+        }
+      },1000)
+    },
+    // 加载详情页面数据源
+    getData(){
+      this.listData = this.$route.params.listData
+      this.imgUrl = this.listData.img
+      this.title = this.listData.obj_name
+      this.keep_time = this.listData.keep_time
+      this.active_time = this.keep_time*60
+      this.level = this.listData.level
+      this.points = this.listData.success_get_points
+      this.introduce= this.listData.introduce
+      var formdata = new FormData()
+      const user_id = JSON.parse(sessionStorage.loginUser).data.user_id
+      formdata.append('user_id',user_id)
+      formdata.append('jianshen_id',this.listData.id)
+      // 查询领取状态
+      axios({
+        method:"POST",
+        url:this.urlQueryLingStatus,
+        data:formdata,
+        config: { headers: {'Content-Type': 'application/x-www-form-urlencoded' }}
+      })
+      .then((res) =>{ 
+        console.log(res.data)
+        if (res.data.length==0) {
+          this.showGetP = false
+          this.showP = true
+          this.ls = 0
+        }
+        else if (res.data[0].yes_get_points==1) {
+          this.ls = 1
+          this.showGetP = true
+          this.showP = false
+          this.startStatus = true
+          this.active_time = "已完成"
+        }
+      })
+      .catch(err =>{
+        console.log(err)
+      })
+      // console.log()
+    },
   },
   created(){
-    
+    this.getData()
   }
 }
 </script>
@@ -137,6 +256,14 @@ export default {
     color: #fff;
     font-weight: bolder;
     border-radius:5px;
+  }
+  .btn{
+    background: #fb3b1f;
+    border-radius: 4px;
+    color: #fff;
+  }
+  .btn:hover{
+    background: #aaa;
   }
 </style>
 

@@ -5,9 +5,9 @@
     </div>
     <div id="bodylist">
         <div @click="goJianshenDetails(item)" v-for="item in listData" class="wrapper">
-          <h1>{{item.name}}</h1><span class="unlocked">解锁人数&nbsp;<i>{{item.unlocked_number}}</i></span><span class="need_points">需要积分&nbsp;<i>{{item.points}}</i></span>
-          <img class="bg" :src="item.imgurl" alt="">
-          <img class="lock_img" :src="lockurl" alt="">
+          <h1>{{item.obj_name}}</h1><span class="unlocked">完成人数&nbsp;<i>{{item.locked_number}}</i></span><span class="need_points">积分要达到&nbsp;<i>{{item.go_lock_points}}</i></span>
+          <img class="bg" :src="item.img" alt="">
+          <!-- <img class="lock_img" :src="lockurl" alt=""> -->
         </div>
     </div>
   </div>
@@ -18,57 +18,83 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      listData:[{
-        name:'俯卧撑',//名称
-        unlocked_number:'2',//解锁人数
-        points:'20',//需要积分
-        imgurl:'static/img/1.jpg'//图片路径
-      },{
-        name:'大众健身操',
-        unlocked_number:'2',
-        points:'30',
-        imgurl:'static/img/2.jpg'
-      },{
-        name:'有氧舞蹈',
-        unlocked_number:'2',
-        points:'40',
-        imgurl:'static/img/3.jpg'
-      },{
-        name:'健身球',
-        unlocked_number:'2',
-        points:'50',
-        imgurl:'static/img/4.jpg'
-      },{
-        name:'俯卧撑',//名称
-        unlocked_number:'2',//解锁人数
-        points:'20',//需要积分
-        imgurl:'static/img/5.jpg'//图片路径
-      },{
-        name:'大众健身操',
-        unlocked_number:'2',
-        points:'30',
-        imgurl:'static/img/6.jpg'
-      },{
-        name:'有氧舞蹈',
-        unlocked_number:'2',
-        points:'40',
-        imgurl:'static/img/7.jpg'
-      },{
-        name:'健身球',
-        unlocked_number:'2',
-        points:'50',
-        imgurl:'static/img/8.jpg'
-      }],
-      lockurl:'static/img/lock.png'
+      listData:[],
+      lockurl:'static/img/lock.png',
+      points:'',
+      account:'',
+      locked_number:'0',
+      urlJian:'http://localhost/biye/BodyPratice/php/queryJianshenList.php',
+      urlQuery:'http://localhost/biye/BodyPratice/php/queryMyInfomation.php',
     }
   },
   methods:{
   	goJianshenDetails(item){
-      this.$router.push({
-        path:'/index/jianshen_details'
+      if (this.account==''||this.account==null||this.account==undefined) {
+        Toast({
+            message: '请先登录',
+            position: 'middle',
+            duration:1000,
+          });
+      }
+      else{
+        if (this.points>=item.go_lock_points) {
+          this.$router.push({
+            name:'jianshen_details',
+            query:{
+              id:item.id
+            },
+            params:{
+              listData:item
+            }
+          })
+        }
+        else{
+          Toast({
+            message: '积分不足',
+            position: 'middle',
+            duration:1000,
+          });
+        }
+      }
+      
+    },
+    // 查询我的信息
+    queryMyInfo(){
+      var formdata = new FormData()
+      const user_id = JSON.parse(sessionStorage.loginUser).data.user_id
+      formdata.append('user_id',user_id)
+      axios({
+        method:"POST",
+        url:this.urlQuery,
+        data:formdata,
+        config: { headers: {'Content-Type': 'application/x-www-form-urlencoded' }}
+      })
+      .then((res) =>{ 
+        this.points = res.data[0].points
+      })
+      .catch(err =>{
+        console.log(err)
+      })
+    },
+    queryJianshenList(){
+      axios({
+        method:"GET",
+        url:this.urlJian,
+        config: { headers: {'Content-Type': 'application/x-www-form-urlencoded' }}
+      })
+      .then((res) =>{ 
+       this.listData = res.data
+      })
+      .catch(err =>{
+        console.log(err)
       })
     }
   },
+  created(){
+    this.queryMyInfo()
+    this.queryJianshenList()
+    this.account = sessionStorage.getItem('account')
+  }
   
 }
 </script>
@@ -94,6 +120,7 @@ export default {
   .wrapper .bg{
     width: 100%;
     height: 8rem;
+    background: #ac7979;
   }
   .wrapper h1{
     position: absolute;
